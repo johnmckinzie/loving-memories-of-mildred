@@ -7,21 +7,42 @@ permalink: /index.html
     <title>Loving Memories of Mildred</title>
     <style>
         body { font-family: 'Georgia', serif; background: #fdfaf7; color: #4e342e; max-width: 900px; margin: 40px auto; padding: 20px; }
-        h1 { text-align: center; color: #5d4037; font-size: 2.5em; }
+        h1 { text-align: center; color: #5d4037; font-size: 2.5em; text-transform: uppercase; }
         
         /* Nested TOC */
         .toc { background: #efebe9; padding: 25px; border-radius: 8px; margin-bottom: 40px; border: 1px solid #d7ccc8; }
         .toc h2 { margin-top: 0; font-size: 1.1em; color: #5d4037; text-transform: uppercase; border-bottom: 1px solid #d7ccc8; padding-bottom: 5px; }
         .toc-list { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .toc-sec { font-weight: bold; }
-        .toc-sub { list-style: none; padding-left: 15px; font-weight: normal; font-size: 0.9em; }
+        
+        /* Apply uppercase to TOC links */
+        .toc-sec a, .toc-sub a { text-transform: uppercase; letter-spacing: 1px; }
+        
+        .toc-sec { font-weight: bold; margin-bottom: 5px; }
+        .toc-sub { list-style: none; padding-left: 15px; font-weight: normal; font-size: 0.85em; margin-top: 5px; }
         .toc a { color: #8d6e63; text-decoration: none; }
 
-        /* Sections */
+        /* Content Sections */
         .major-section { margin-bottom: 50px; }
-        .major-title { font-size: 2em; color: #5d4037; border-bottom: 3px solid #d7ccc8; }
-        .sub-section { margin: 20px 0 10px 20px; }
-        .sub-title { color: #8d6e63; font-style: italic; font-size: 1.3em; border-left: 3px solid #d7ccc8; padding-left: 10px; }
+        
+        /* Force Uppercase on Major Titles */
+        .major-title { 
+            font-size: 2em; 
+            color: #5d4037; 
+            border-bottom: 3px solid #d7ccc8; 
+            text-transform: uppercase; 
+            letter-spacing: 2px;
+        }
+        
+        /* Force Uppercase on Sub Titles */
+        .sub-title { 
+            color: #8d6e63; 
+            font-style: italic; 
+            font-size: 1.3em; 
+            border-left: 3px solid #d7ccc8; 
+            padding-left: 10px; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
         
         .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
         .recipe-link { 
@@ -46,7 +67,6 @@ permalink: /index.html
             {% if sec != lastSec %}
                 {% if lastSec != "" %}</ul></li>{% endif %}
                 <li class="toc-sec">
-                    {# Casing matches folder name exactly #}
                     <a href="#{{ sec | slugify }}">{{ sec | replace("-", " ") | replace("_", " ") }}</a>
                     <ul class="toc-sub">
                 {% set lastSec = sec %}

@@ -1,0 +1,12 @@
+{
+  "name": "loving-memories-of-mildred",
+  "version": "1.0.0",
+  "description": "A digital preservation of Mildred's recipe collection.",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "dependencies": {
+    "cooklang": "^0.4.0",
+    "fs-extra": "^11.1.0"
+  }
+}

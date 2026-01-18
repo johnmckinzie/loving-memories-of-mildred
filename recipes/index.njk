@@ -9,51 +9,59 @@ permalink: /index.html
         body { font-family: 'Georgia', serif; background: #fdfaf7; color: #4e342e; max-width: 900px; margin: 40px auto; padding: 20px; }
         h1 { text-align: center; color: #5d4037; font-size: 2.5em; }
         
-        /* Table of Contents */
-        .toc { background: #efebe9; padding: 20px; border-radius: 8px; margin-bottom: 40px; border: 1px solid #d7ccc8; }
-        .toc h2 { margin-top: 0; font-size: 1.2em; color: #5d4037; text-transform: uppercase; }
-        .toc ul { display: flex; flex-wrap: wrap; gap: 15px; list-style: none; padding: 0; }
-        .toc a { color: #8d6e63; text-decoration: none; font-weight: bold; }
+        /* Nested Table of Contents */
+        .toc { background: #efebe9; padding: 25px; border-radius: 8px; margin-bottom: 40px; border: 1px solid #d7ccc8; }
+        .toc h2 { margin-top: 0; font-size: 1.1em; color: #5d4037; text-transform: uppercase; border-bottom: 1px solid #d7ccc8; padding-bottom: 5px; }
+        .toc-main-list { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .toc-section-item { font-weight: bold; }
+        .toc-sub-list { list-style: none; padding-left: 15px; font-weight: normal; font-size: 0.9em; }
+        .toc a { color: #8d6e63; text-decoration: none; }
         .toc a:hover { text-decoration: underline; }
 
-        /* Sections */
-        .major-section { margin-bottom: 60px; }
+        /* Content Sections */
+        .major-section { margin-bottom: 60px; padding-top: 20px; }
         .major-title { font-size: 2em; color: #5d4037; border-bottom: 3px solid #d7ccc8; padding-bottom: 10px; text-transform: capitalize; }
+        .sub-section { margin: 30px 0 10px 20px; padding-top: 10px; }
+        .sub-title { color: #8d6e63; font-style: italic; font-size: 1.4em; margin-bottom: 15px; text-transform: capitalize; }
         
-        /* Sub-sections */
-        .sub-section { margin: 25px 0 10px 20px; }
-        .sub-title { color: #8d6e63; font-style: italic; font-size: 1.3em; margin-bottom: 10px; text-transform: capitalize; }
-        
-        .recipe-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
-            gap: 10px; 
-            padding-left: 20px;
-        }
+        .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
         .recipe-link { 
-            background: white; padding: 10px; border: 1px solid #e0d7d5; 
+            background: white; padding: 12px; border: 1px solid #e0d7d5; 
             border-radius: 4px; text-decoration: none; color: #4e342e; 
-            font-size: 0.95em; transition: 0.2s; text-align: center;
+            font-size: 1em; transition: 0.2s; text-align: center; display: block;
         }
-        .recipe-link:hover { background: #fffbf0; border-color: #8d6e63; }
+        .recipe-link:hover { background: #fffbf0; border-color: #8d6e63; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
     <h1>Loving Memories of Mildred</h1>
-    <p style="text-align:center;"><em>A organized legacy of family recipes.</em></p>
+    <p style="text-align:center;"><em>A digital preservation of Mildred's recipe collection.</em></p>
 
     <nav class="toc">
-        <h2>Sections</h2>
-        <ul>
-        {% set sections = [] %}
-        {% for recipe in collections.all %}
+        <h2>Table of Contents</h2>
+        <ul class="toc-main-list">
+        {% set lastSec = "" %}
+        {% for recipe in collections.all | sortByFilePath %}
+          {% if recipe.url != '/' %}
             {% set sec = recipe.filePathStem | getPathPart(0) %}
-            {% if sec and sec not in sections %}
-                {% set sections = (sections.push(sec), sections) %}
-                <li><a href="#{{ sec | slugify }}">{{ sec | replace("-", " ") | capitalize }}</a></li>
+            {% set sub = recipe.filePathStem | getPathPart(1) %}
+            
+            {% if sec != lastSec %}
+                {% if lastSec != "" %}</ul></li>{% endif %}
+                <li class="toc-section-item">
+                    <a href="#{{ sec | slugify }}">{{ sec | replace("-", " ") | capitalize }}</a>
+                    <ul class="toc-sub-list">
+                {% set lastSec = sec %}
+                {% set lastSub = "" %}
             {% endif %}
+
+            {% if sub != lastSub %}
+                <li><a href="#{{ sec | slugify }}-{{ sub | slugify }}">{{ sub | replace("-", " ") | capitalize }}</a></li>
+                {% set lastSub = sub %}
+            {% endif %}
+          {% endif %}
         {% endfor %}
-        </ul>
+        </ul></li></ul>
     </nav>
 
     {% set lastMajor = "" %}
@@ -61,33 +69,31 @@ permalink: /index.html
 
     {% for recipe in collections.all | sortByFilePath %}
       {% if recipe.url != '/' %}
-        
         {% set currentMajor = recipe.filePathStem | getPathPart(0) %}
         {% set currentSub = recipe.filePathStem | getPathPart(1) %}
 
-        {# Start a New Major Section #}
         {% if currentMajor != lastMajor %}
             {% if lastMajor != "" %}</div></div></div>{% endif %}
             <div class="major-section" id="{{ currentMajor | slugify }}">
                 <h2 class="major-title">{{ currentMajor | replace("-", " ") }}</h2>
                 {% set lastMajor = currentMajor %}
-                {% set lastSub = "" %} {# Reset sub when major changes #}
+                {% set lastSub = "" %}
         {% endif %}
 
-        {# Start a New Sub Section #}
         {% if currentSub != lastSub %}
             {% if lastSub != "" %}</div></div>{% endif %}
-            <div class="sub-section">
+            <div class="sub-section" id="{{ currentMajor | slugify }}-{{ currentSub | slugify }}">
                 <h3 class="sub-title">{{ currentSub | replace("-", " ") }}</h3>
                 <div class="recipe-grid">
                 {% set lastSub = currentSub %}
         {% endif %}
 
         <a href="{{ recipe.url }}" class="recipe-link">
-            {{ recipe.fileSlug | replace("-", " ") | capitalize }}
+            {{ recipe.data.title if recipe.data.title else (recipe.fileSlug | replace("-", " ") | capitalize) }}
         </a>
 
       {% endif %}
     {% endfor %}
-    </div></div></div> </body>
+    </div></div></div>
+</body>
 </html>

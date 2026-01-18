@@ -1,4 +1,16 @@
 {
-  "image": "docker pull inigochoa/cookcli:buildcache",
-  "features": {}
+  "name": "Cooklang",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/rust:1": {},
+    "ghcr.io/devcontainers/features/node:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["cooklang.cooklang-vscode", "dubadub.cook", "RohitRajendran.cookcli-scripts"]
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/install_cook.sh",
+  "forwardPorts": [9080],
+  "remoteUser": "vscode"
 }

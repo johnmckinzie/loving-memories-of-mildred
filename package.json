@@ -1,11 +1,10 @@
 {
   "name": "loving-memories-of-mildred",
   "version": "1.0.0",
-  "description": "A digital preservation of Mildred's recipe collection.",
   "scripts": {
-    "build": "cooklang project export html --output public"
+    "build": "npx @11ty/eleventy"
   },
-  "dependencies": {
-    "cooklang": "^0.1.10" 
+  "devDependencies": {
+    "@11ty/eleventy": "^2.0.1"
   }
 }

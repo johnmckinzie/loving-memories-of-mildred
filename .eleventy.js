@@ -1,13 +1,25 @@
 module.exports = function(eleventyConfig) {
-  // This tells Eleventy to look deep into subfolders
+  // 1. The custom filter to fix your error
+  eleventyConfig.addFilter("sortByFilePath", (values) => {
+    return [...values].sort((a, b) => a.filePathStem.localeCompare(b.filePathStem));
+  });
+
+  // 2. A filter to clean up folder names (e.g., "01_desserts" -> "Desserts")
+  eleventyConfig.addFilter("cleanPath", (path) => {
+    return path
+      .replace(/^\/|\/$/g, "") // Remove leading/trailing slashes
+      .replace(/\//g, " › ")   // Replace slashes with breadcrumb arrows
+      .replace(/[_-]/g, " ");  // Replace underscores with spaces
+  });
+
   eleventyConfig.addTemplateFormats("cook");
 
   eleventyConfig.addExtension("cook", {
     compile: async (inputContent) => {
       return async (data) => {
-        // Simple formatting logic for the Cooklang text
+        // Simple Cooklang formatting
         let formatted = inputContent
-          .replace(/>>(.*?)\n/g, '<p class="note"><strong>Mildred\'s Note:</strong> $1</p>')
+          .replace(/>>(.*?)\n/g, '<div class="note"><strong>Note:</strong> $1</div>')
           .replace(/@([\w\s]+)\{([\d\/\.\w\s%]*)\}/g, '<span class="ing"><strong>$2</strong> $1</span>')
           .replace(/#([\w\s]+)\{([\d\/\.\w\s%]*)\}/g, '<span class="tool">$1</span>')
           .replace(/\n/g, '<br>');

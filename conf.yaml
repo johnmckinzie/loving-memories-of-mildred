@@ -1,0 +1,3 @@
+recipe_directory: "recipes"
+output_directory: "public"
+# assets_directory: "assets" # Optional: for photos of Mildred's handwritten notes

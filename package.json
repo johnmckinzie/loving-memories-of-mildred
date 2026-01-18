@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "description": "A digital preservation of Mildred's recipe collection.",
   "scripts": {
-    "build": "node build.js"
+    "build": "cooklang project export html --output public"
   },
   "dependencies": {
-    "cooklang": "^0.3.0",
-    "fs-extra": "^11.3.3"
+    "cooklang": "^0.1.10" 
   }
 }

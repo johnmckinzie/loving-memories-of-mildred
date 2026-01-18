@@ -3,14 +3,13 @@ module.exports = function(eleventyConfig) {
     return [...values].sort((a, b) => a.filePathStem.localeCompare(b.filePathStem));
   });
 
-  // This filter helps us group recipes by their parent folder
-  eleventyConfig.addFilter("getParentFolder", (path) => {
-    const parts = path.split('/');
-    return parts.length > 2 ? parts[parts.length - 2] : "Main";
+  // Extract parts of the path: /recipes/Section/SubSection/Recipe
+  eleventyConfig.addFilter("getPathPart", (path, index) => {
+    const parts = path.split('/').filter(p => p && p !== 'recipes' && p !== 'index');
+    return parts[index] || "";
   });
 
   eleventyConfig.addTemplateFormats("cook");
-
   eleventyConfig.addExtension("cook", {
     compile: async (inputContent) => {
       return async (data) => {
@@ -35,7 +34,7 @@ module.exports = function(eleventyConfig) {
             </style>
           </head>
           <body>
-            <a href="/" class="back">← Back to Collection</a>
+            <a href="/" class="back">← Home</a>
             <div class="recipe-card">
                 <h1>${data.page.fileSlug.replace(/[-_]/g, ' ')}</h1>
                 <div class="recipe-body">${formatted}</div>
@@ -47,7 +46,5 @@ module.exports = function(eleventyConfig) {
     }
   });
 
-  return {
-    dir: { input: "recipes", output: "_site" }
-  };
+  return { dir: { input: "recipes", output: "_site" } };
 };

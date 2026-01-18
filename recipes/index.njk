@@ -6,70 +6,88 @@ permalink: /index.html
 <head>
     <title>Loving Memories of Mildred</title>
     <style>
-        body { font-family: 'Georgia', serif; background: #fdfaf7; color: #4e342e; max-width: 800px; margin: 40px auto; padding: 20px; }
-        h1 { text-align: center; color: #5d4037; }
-        .folder-group { margin-bottom: 40px; }
-        .folder-header { 
-            background: #d7ccc8; 
-            padding: 10px 20px; 
-            border-radius: 6px; 
-            color: #5d4037; 
-            text-transform: uppercase; 
-            font-size: 0.85em; 
-            letter-spacing: 2px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            box-shadow: 2px 2px 0px #8d6e63;
-        }
+        body { font-family: 'Georgia', serif; background: #fdfaf7; color: #4e342e; max-width: 900px; margin: 40px auto; padding: 20px; }
+        h1 { text-align: center; color: #5d4037; font-size: 2.5em; }
+        
+        /* Table of Contents */
+        .toc { background: #efebe9; padding: 20px; border-radius: 8px; margin-bottom: 40px; border: 1px solid #d7ccc8; }
+        .toc h2 { margin-top: 0; font-size: 1.2em; color: #5d4037; text-transform: uppercase; }
+        .toc ul { display: flex; flex-wrap: wrap; gap: 15px; list-style: none; padding: 0; }
+        .toc a { color: #8d6e63; text-decoration: none; font-weight: bold; }
+        .toc a:hover { text-decoration: underline; }
+
+        /* Sections */
+        .major-section { margin-bottom: 60px; }
+        .major-title { font-size: 2em; color: #5d4037; border-bottom: 3px solid #d7ccc8; padding-bottom: 10px; text-transform: capitalize; }
+        
+        /* Sub-sections */
+        .sub-section { margin: 25px 0 10px 20px; }
+        .sub-title { color: #8d6e63; font-style: italic; font-size: 1.3em; margin-bottom: 10px; text-transform: capitalize; }
+        
         .recipe-grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
-            gap: 15px; 
-            padding-left: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+            gap: 10px; 
+            padding-left: 20px;
         }
         .recipe-link { 
-            background: white; 
-            padding: 15px; 
-            border: 1px solid #e0d7d5; 
-            border-radius: 4px; 
-            text-decoration: none; 
-            color: #8d6e63; 
-            transition: all 0.2s;
-            text-align: center;
+            background: white; padding: 10px; border: 1px solid #e0d7d5; 
+            border-radius: 4px; text-decoration: none; color: #4e342e; 
+            font-size: 0.95em; transition: 0.2s; text-align: center;
         }
-        .recipe-link:hover { 
-            background: #efebe9; 
-            border-color: #8d6e63;
-            transform: translateY(-2px);
-        }
+        .recipe-link:hover { background: #fffbf0; border-color: #8d6e63; }
     </style>
 </head>
 <body>
     <h1>Loving Memories of Mildred</h1>
-    <p style="text-align:center;"><em>Select a category to browse her recipes.</em></p>
-    <hr style="border: 0; border-top: 1px solid #d7ccc8; margin: 30px 0;">
+    <p style="text-align:center;"><em>A organized legacy of family recipes.</em></p>
 
-    {% set lastFolder = "" %}
-    <div class="directory">
-    {%- for recipe in collections.all | sortByFilePath -%}
-      {%- if recipe.url != '/' -%}
+    <nav class="toc">
+        <h2>Sections</h2>
+        <ul>
+        {% set sections = [] %}
+        {% for recipe in collections.all %}
+            {% set sec = recipe.filePathStem | getPathPart(0) %}
+            {% if sec and sec not in sections %}
+                {% set sections = (sections.push(sec), sections) %}
+                <li><a href="#{{ sec | slugify }}">{{ sec | replace("-", " ") | capitalize }}</a></li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+    </nav>
+
+    {% set lastMajor = "" %}
+    {% set lastSub = "" %}
+
+    {% for recipe in collections.all | sortByFilePath %}
+      {% if recipe.url != '/' %}
         
-        {% set currentFolder = recipe.filePathStem | getParentFolder %}
-        
-        {% if currentFolder != lastFolder %}
-          {% if lastFolder != "" %}</div></div>{% endif %}
-          <div class="folder-group">
-            <div class="folder-header">{{ currentFolder | replace("-", " ") | replace("_", " ") }}</div>
-            <div class="recipe-grid">
-          {% set lastFolder = currentFolder %}
+        {% set currentMajor = recipe.filePathStem | getPathPart(0) %}
+        {% set currentSub = recipe.filePathStem | getPathPart(1) %}
+
+        {# Start a New Major Section #}
+        {% if currentMajor != lastMajor %}
+            {% if lastMajor != "" %}</div></div></div>{% endif %}
+            <div class="major-section" id="{{ currentMajor | slugify }}">
+                <h2 class="major-title">{{ currentMajor | replace("-", " ") }}</h2>
+                {% set lastMajor = currentMajor %}
+                {% set lastSub = "" %} {# Reset sub when major changes #}
+        {% endif %}
+
+        {# Start a New Sub Section #}
+        {% if currentSub != lastSub %}
+            {% if lastSub != "" %}</div></div>{% endif %}
+            <div class="sub-section">
+                <h3 class="sub-title">{{ currentSub | replace("-", " ") }}</h3>
+                <div class="recipe-grid">
+                {% set lastSub = currentSub %}
         {% endif %}
 
         <a href="{{ recipe.url }}" class="recipe-link">
-            {{ recipe.fileSlug | replace("-", " ") | replace("_", " ") | capitalize }}
+            {{ recipe.fileSlug | replace("-", " ") | capitalize }}
         </a>
 
-      {%- endif -%}
-    {%- endfor -%}
-    </div></div>
-</body>
+      {% endif %}
+    {% endfor %}
+    </div></div></div> </body>
 </html>

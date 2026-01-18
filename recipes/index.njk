@@ -6,25 +6,27 @@ permalink: /index.html
 <head>
     <title>Loving Memories of Mildred</title>
     <style>
-        body { font-family: 'Georgia', serif; background: #fdfaf7; color: #4e342e; max-width: 700px; margin: 40px auto; padding: 20px; text-align: center; }
-        .recipe-list { list-style: none; padding: 0; }
-        .recipe-item { margin: 15px 0; }
-        .recipe-item a { font-size: 1.2em; color: #8d6e63; text-decoration: none; font-weight: bold; }
-        .recipe-item a:hover { text-decoration: underline; }
+        body { font-family: 'Georgia', serif; background: #fdfaf7; color: #4e342e; max-width: 800px; margin: 40px auto; padding: 20px; }
+        h1 { text-align: center; color: #5d4037; }
+        .section-title { background: #d7ccc8; padding: 5px 15px; border-radius: 4px; margin-top: 30px; color: #5d4037; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9em; }
+        .recipe-list { list-style: none; padding: 0; margin-left: 20px; }
+        .recipe-item { margin: 10px 0; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .recipe-item a { color: #8d6e63; text-decoration: none; font-size: 1.1em; }
+        .recipe-item a:hover { color: #5d4037; text-decoration: underline; }
+        .folder-path { color: #9e9e9e; font-size: 0.8em; margin-bottom: 2px; display: block; }
     </style>
 </head>
 <body>
     <h1>Loving Memories of Mildred</h1>
-    <p>A collection of her kitchen legacy.</p>
-    <hr>
-    <ul class="recipe-list">
-    {%- for recipe in collections.all -%}
-        {%- if recipe.url != '/' -%}
-        <li class="recipe-item">
+    <p style="text-align:center;"><em>Exploring her nested collection of family flavors.</em></p>
+
+    {%- for recipe in collections.all | sortByFilePath -%}
+      {%- if recipe.url != '/' -%}
+        <div class="recipe-item">
+            <span class="folder-path">{{ recipe.filePathStem | replace("/index", "") | replace("/recipes/", "") }}</span>
             <a href="{{ recipe.url }}">🌸 {{ recipe.fileSlug | replace("-", " ") | replace("_", " ") | capitalize }}</a>
-        </li>
-        {%- endif -%}
+        </div>
+      {%- endif -%}
     {%- endfor -%}
-    </ul>
 </body>
 </html>

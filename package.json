@@ -6,7 +6,7 @@
     "build": "node build.js"
   },
   "dependencies": {
-    "cooklang": "^0.4.0",
-    "fs-extra": "^11.1.0"
+    "cooklang": "^0.3.0",
+    "fs-extra": "^11.3.3"
   }
 }

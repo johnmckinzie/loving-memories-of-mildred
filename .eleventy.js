@@ -10,13 +10,12 @@ module.exports = function(eleventyConfig) {
 
   eleventyConfig.addTemplateFormats("cook");
   eleventyConfig.addExtension("cook", {
-    read: true, // This allows us to access the raw content
+    read: true, 
     getData: async (inputPath) => {
-      // Basic regex to pull the title from frontmatter (>> title: Name)
       const content = require('fs').readFileSync(inputPath, 'utf-8');
+      // Updated regex to capture the exact string after "title:"
       const titleMatch = content.match(/^>>\s*title:\s*(.*)$/m);
       return {
-        // Fallback to filename if title isn't in frontmatter
         title: titleMatch ? titleMatch[1].trim() : null 
       };
     },

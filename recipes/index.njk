@@ -19,9 +19,9 @@ permalink: /index.html
 
         /* Sections */
         .major-section { margin-bottom: 50px; }
-        .major-title { font-size: 2em; color: #5d4037; border-bottom: 3px solid #d7ccc8; text-transform: capitalize; }
+        .major-title { font-size: 2em; color: #5d4037; border-bottom: 3px solid #d7ccc8; }
         .sub-section { margin: 20px 0 10px 20px; }
-        .sub-title { color: #8d6e63; font-style: italic; font-size: 1.3em; text-transform: capitalize; }
+        .sub-title { color: #8d6e63; font-style: italic; font-size: 1.3em; border-left: 3px solid #d7ccc8; padding-left: 10px; }
         
         .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
         .recipe-link { 
@@ -42,13 +42,19 @@ permalink: /index.html
           {% if recipe.url != '/' %}
             {% set sec = recipe.filePathStem | getPathPart(0) %}
             {% set sub = recipe.filePathStem | getPathPart(1) %}
+            
             {% if sec != lastSec %}
                 {% if lastSec != "" %}</ul></li>{% endif %}
-                <li class="toc-sec"><a href="#{{ sec | slugify }}">{{ sec | replace("-", " ") | capitalize }}</a><ul class="toc-sub">
-                {% set lastSec = sec %}{% set lastSub = "" %}
+                <li class="toc-sec">
+                    {# Casing matches folder name exactly #}
+                    <a href="#{{ sec | slugify }}">{{ sec | replace("-", " ") | replace("_", " ") }}</a>
+                    <ul class="toc-sub">
+                {% set lastSec = sec %}
+                {% set lastSub = "" %}
             {% endif %}
+
             {% if sub != lastSub %}
-                <li><a href="#{{ sec | slugify }}-{{ sub | slugify }}">{{ sub | replace("-", " ") | capitalize }}</a></li>
+                <li><a href="#{{ sec | slugify }}-{{ sub | slugify }}">{{ sub | replace("-", " ") | replace("_", " ") }}</a></li>
                 {% set lastSub = sub %}
             {% endif %}
           {% endif %}
@@ -56,7 +62,9 @@ permalink: /index.html
         </ul></li></ul>
     </nav>
 
-    {% set lastMajor = "" %}{% set lastSub = "" %}
+    {% set lastMajor = "" %}
+    {% set lastSub = "" %}
+
     {% for recipe in collections.all | sortByFilePath %}
       {% if recipe.url != '/' %}
         {% set currentMajor = recipe.filePathStem | getPathPart(0) %}
@@ -65,14 +73,15 @@ permalink: /index.html
         {% if currentMajor != lastMajor %}
             {% if lastMajor != "" %}</div></div></div>{% endif %}
             <div class="major-section" id="{{ currentMajor | slugify }}">
-                <h2 class="major-title">{{ currentMajor | replace("-", " ") }}</h2>
-                {% set lastMajor = currentMajor %}{% set lastSub = "" %}
+                <h2 class="major-title">{{ currentMajor | replace("-", " ") | replace("_", " ") }}</h2>
+                {% set lastMajor = currentMajor %}
+                {% set lastSub = "" %}
         {% endif %}
 
         {% if currentSub != lastSub %}
             {% if lastSub != "" %}</div></div>{% endif %}
             <div class="sub-section" id="{{ currentMajor | slugify }}-{{ currentSub | slugify }}">
-                <h3 class="sub-title">{{ currentSub | replace("-", " ") }}</h3>
+                <h3 class="sub-title">{{ currentSub | replace("-", " ") | replace("_", " ") }}</h3>
                 <div class="recipe-grid">
                 {% set lastSub = currentSub %}
         {% endif %}

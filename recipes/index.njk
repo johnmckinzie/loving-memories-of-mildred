@@ -8,26 +8,68 @@ permalink: /index.html
     <style>
         body { font-family: 'Georgia', serif; background: #fdfaf7; color: #4e342e; max-width: 800px; margin: 40px auto; padding: 20px; }
         h1 { text-align: center; color: #5d4037; }
-        .recipe-item { margin: 15px 0; border-bottom: 1px solid #e0d7d5; padding-bottom: 10px; }
-        .folder-path { color: #9e9e9e; font-size: 0.75em; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 4px; }
-        .recipe-link { color: #8d6e63; text-decoration: none; font-size: 1.2em; font-weight: bold; }
-        .recipe-link:hover { color: #5d4037; }
+        .folder-group { margin-bottom: 40px; }
+        .folder-header { 
+            background: #d7ccc8; 
+            padding: 10px 20px; 
+            border-radius: 6px; 
+            color: #5d4037; 
+            text-transform: uppercase; 
+            font-size: 0.85em; 
+            letter-spacing: 2px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            box-shadow: 2px 2px 0px #8d6e63;
+        }
+        .recipe-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+            gap: 15px; 
+            padding-left: 10px;
+        }
+        .recipe-link { 
+            background: white; 
+            padding: 15px; 
+            border: 1px solid #e0d7d5; 
+            border-radius: 4px; 
+            text-decoration: none; 
+            color: #8d6e63; 
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .recipe-link:hover { 
+            background: #efebe9; 
+            border-color: #8d6e63;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
     <h1>Loving Memories of Mildred</h1>
-    <p style="text-align:center;"><em>A nested collection of family recipes.</em></p>
-    <hr>
+    <p style="text-align:center;"><em>Select a category to browse her recipes.</em></p>
+    <hr style="border: 0; border-top: 1px solid #d7ccc8; margin: 30px 0;">
 
-    <div class="recipe-list">
+    {% set lastFolder = "" %}
+    <div class="directory">
     {%- for recipe in collections.all | sortByFilePath -%}
       {%- if recipe.url != '/' -%}
-        <div class="recipe-item">
-            <span class="folder-path">{{ recipe.filePathStem | replace("/index", "") | cleanPath }}</span>
-            <a href="{{ recipe.url }}" class="recipe-link">🌸 {{ recipe.fileSlug | replace("-", " ") | replace("_", " ") | capitalize }}</a>
-        </div>
+        
+        {% set currentFolder = recipe.filePathStem | getParentFolder %}
+        
+        {% if currentFolder != lastFolder %}
+          {% if lastFolder != "" %}</div></div>{% endif %}
+          <div class="folder-group">
+            <div class="folder-header">{{ currentFolder | replace("-", " ") | replace("_", " ") }}</div>
+            <div class="recipe-grid">
+          {% set lastFolder = currentFolder %}
+        {% endif %}
+
+        <a href="{{ recipe.url }}" class="recipe-link">
+            {{ recipe.fileSlug | replace("-", " ") | replace("_", " ") | capitalize }}
+        </a>
+
       {%- endif -%}
     {%- endfor -%}
-    </div>
+    </div></div>
 </body>
 </html>

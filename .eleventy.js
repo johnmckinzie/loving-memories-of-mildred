@@ -1,10 +1,12 @@
 const fs = require('fs');
 
 module.exports = function(eleventyConfig) {
+  // 1. Sort recipes alphabetically by their file path
   eleventyConfig.addFilter("sortByFilePath", (values) => {
     return [...values].sort((a, b) => a.filePathStem.localeCompare(b.filePathStem));
   });
 
+  // 2. Custom Title Case filter for Sections/Sub-sections
   eleventyConfig.addFilter("titlecase", (str) => {
     if (!str) return "";
     return str
@@ -14,37 +16,48 @@ module.exports = function(eleventyConfig) {
       .join(" ");
   });
 
+  // 3. Extract folder parts for the nested navigation
   eleventyConfig.addFilter("getPathPart", (path, index) => {
     const parts = path.split('/').filter(p => p && p !== 'recipes' && p !== 'index');
     return parts[index] || "";
   });
 
+  // 4. Register the .cook extension
   eleventyConfig.addTemplateFormats("cook");
   
   eleventyConfig.addExtension("cook", {
     compile: async (inputContent) => {
       return async (data) => {
-        // 1. USE THE BUILT-IN DATA OBJECT
-        // Eleventy has already parsed your frontmatter into the 'data' variable.
-        // We just need to remove the raw text block from the body.
+        // Remove the YAML frontmatter block for processing the body
         const recipeBody = inputContent.replace(/^---[\s\S]*?---\n?/, '').trim();
 
-        // 2. Format the Cooklang body
+        // Transform Cooklang symbols into clean HTML
         let formatted = recipeBody
+          // A. Sections: == Section Name == (Multiline flag 'm' is key here)
+          .replace(/^==+\s*(.*?)\s*==+/gm, '<h3 class="recipe-section">$1</h3>')
+
+          // B. Ingredients with units: @ingredient{quantity%unit}
           .replace(/@([\w\s]+)\{([^%}]*)%([^}]*)\}/g, '<span class="ing"><strong>$2 $3</strong> $1</span>')
+          
+          // C. Ingredients without units: @ingredient{quantity}
           .replace(/@([\w\s]+)\{([^}]*)\}/g, '<span class="ing"><strong>$2</strong> $1</span>')
+          
+          // D. Shorthand quantities: 1%Tbsp
           .replace(/(\d+[\/\d\.]*)%([\w]+)/g, '<strong>$1 $2</strong>')
+          
+          // E. Plain ingredients: @Salt
           .replace(/@([\w\s]+)/g, '<span class="ing">$1</span>')
+          
+          // F. Cookware: #pot{...}
           .replace(/#([\w\s]+)\{?([^}]*)\}?/g, '<span class="tool">$1</span>')
-          .replace(/>>(.*?)\n/g, (match, note) => {
-            if (match.startsWith('>>')) {
-                return `<div class="note"><strong>Note:</strong> ${note.replace('>>', '').trim()}</div>`;
-            }
-            return match;
-          })
+          
+          // G. Notes and Metadata lines: >> This is a note
+          .replace(/^>>\s*(.*?)$/gm, '<div class="note"><strong>Note:</strong> $1</div>')
+          
+          // H. Line breaks
           .replace(/\n/g, '<br>');
 
-        // 3. Build Metadata HTML using the 'data' object directly
+        // Build Metadata Header
         let metadataHtml = '';
         if (data.author || data.category || data.source || data['cook time']) {
           metadataHtml = `
@@ -85,7 +98,19 @@ module.exports = function(eleventyConfig) {
                 box-sizing: border-box;
               }
               h1 { color: #5d4037; border-bottom: 2px solid #d7ccc8; margin-top: 0; font-size: 1.8rem; padding-bottom: 10px; }
-              strong { color: #5d4037; font-weight: bold; }
+              
+              /* Section Styles */
+              .recipe-section {
+                color: #8d6e63;
+                font-size: 1.3rem;
+                margin-top: 30px;
+                margin-bottom: 10px;
+                border-bottom: 1px solid #efebe9;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                display: block;
+              }
+
               .metadata { 
                 background: #efebe9; 
                 padding: 15px; 
@@ -94,10 +119,11 @@ module.exports = function(eleventyConfig) {
                 font-size: 0.95rem;
                 border-left: 5px solid #8d6e63;
               }
-              .metadata p { margin: 8px 0; }
-              .metadata strong { color: #5d4037; }
+              .metadata p { margin: 5px 0; }
+              
+              strong { color: #5d4037; }
               .note { background: #efebe9; padding: 15px; border-radius: 5px; font-style: italic; border-left: 5px solid #8d6e63; margin: 20px 0; font-size: 0.95rem; }
-              .back { text-decoration: none; color: #8d6e63; font-weight: bold; display: inline-block; margin-bottom: 15px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+              .back { text-decoration: none; color: #8d6e63; font-weight: bold; display: inline-block; margin-bottom: 15px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
               
               @media (min-width: 600px) {
                 body { padding: 40px 20px; }

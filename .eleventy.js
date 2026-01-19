@@ -132,14 +132,12 @@ module.exports = function(eleventyConfig) {
                 <a href="/" class="back">← Back to Collection</a>
                 <div class="recipe-card">
                     <h1>${data.title}</h1>
-                    ${metadata.author ? `
-                    <div class="metadata">
-                      ${metadata.author ? `<p><strong>Author:</strong> ${metadata.author}</p>` : ''}
+                    ${metadata.author ? `<div class="metadata">
+                      <p><strong>Author:</strong> ${metadata.author}</p>
                       ${metadata.category ? `<p><strong>Category:</strong> ${metadata.category}</p>` : ''}
                       ${metadata['cook time'] ? `<p><strong>Cook Time:</strong> ${metadata['cook time']}</p>` : ''}
                       ${metadata.source ? `<p><strong>Source:</strong> ${metadata.source}</p>` : ''}
-                    </div>
-                    ` : ''}
+                    </div>` : ''}
                     <div class="recipe-body">${formatted}</div>
                 </div>
             </div>

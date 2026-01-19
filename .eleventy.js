@@ -29,7 +29,7 @@ module.exports = function(eleventyConfig) {
     compile: async (inputContent) => {
       return async (data) => {
         // Extract YAML frontmatter
-        const frontmatterMatch = inputContent.match(/^---\n([\s\S]*?)\n---/);
+        const frontmatterMatch = inputContent.match(/^---\s*\n([\s\S]*?)\n---\s*\n/);
         let metadata = {};
         
         if (frontmatterMatch) {
@@ -76,6 +76,18 @@ module.exports = function(eleventyConfig) {
           .replace(/\n/g, '<br>');
 
         // Return the full HTML for the recipe page
+        let metadataHtml = '';
+        if (metadata.author) {
+          metadataHtml = `
+            <div class="metadata">
+              <p><strong>Author:</strong> ${metadata.author}</p>
+              ${metadata.category ? `<p><strong>Category:</strong> ${metadata.category}</p>` : ''}
+              ${metadata['cook time'] ? `<p><strong>Cook Time:</strong> ${metadata['cook time']}</p>` : ''}
+              ${metadata.source ? `<p><strong>Source:</strong> ${metadata.source}</p>` : ''}
+            </div>
+          `;
+        }
+
         return `
           <!DOCTYPE html>
           <html lang="en">
@@ -132,12 +144,7 @@ module.exports = function(eleventyConfig) {
                 <a href="/" class="back">← Back to Collection</a>
                 <div class="recipe-card">
                     <h1>${data.title}</h1>
-                    ${metadata.author ? `<div class="metadata">
-                      <p><strong>Author:</strong> ${metadata.author}</p>
-                      ${metadata.category ? `<p><strong>Category:</strong> ${metadata.category}</p>` : ''}
-                      ${metadata['cook time'] ? `<p><strong>Cook Time:</strong> ${metadata['cook time']}</p>` : ''}
-                      ${metadata.source ? `<p><strong>Source:</strong> ${metadata.source}</p>` : ''}
-                    </div>` : ''}
+                    ${metadataHtml}
                     <div class="recipe-body">${formatted}</div>
                 </div>
             </div>

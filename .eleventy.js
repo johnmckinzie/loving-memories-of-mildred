@@ -1,71 +1,113 @@
 const fs = require('fs');
 
 module.exports = function(eleventyConfig) {
+  // 1. Sort recipes alphabetically by their file path
   eleventyConfig.addFilter("sortByFilePath", (values) => {
     return [...values].sort((a, b) => a.filePathStem.localeCompare(b.filePathStem));
   });
 
+  // 2. Custom Title Case filter for Sections/Sub-sections (e.g., meat_poultry -> Meat Poultry)
   eleventyConfig.addFilter("titlecase", (str) => {
     if (!str) return "";
-    return str.replace(/[-_]/g, " ").split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
+    return str
+      .replace(/[-_]/g, " ")
+      .split(" ")
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
   });
 
+  // 3. Extract folder parts for the nested navigation (0 = Section, 1 = Sub-section)
   eleventyConfig.addFilter("getPathPart", (path, index) => {
     const parts = path.split('/').filter(p => p && p !== 'recipes' && p !== 'index');
     return parts[index] || "";
   });
 
+  // 4. Register the .cook extension
   eleventyConfig.addTemplateFormats("cook");
   
   eleventyConfig.addExtension("cook", {
     compile: async (inputContent) => {
       return async (data) => {
-        // Strip Frontmatter
+        // Remove the YAML frontmatter from the display content
         const recipeBody = inputContent.replace(/^---[\s\S]*?---\n?/, '').trim();
 
+        // Transform Cooklang symbols into clean HTML
         let formatted = recipeBody
-          // 1. Handle @ingredient{quantity%unit} -> "quantity unit ingredient"
+          // Handle @ingredient{quantity%unit} -> "quantity unit ingredient"
           .replace(/@([\w\s]+)\{([^%}]*)%([^}]*)\}/g, '<span class="ing"><strong>$2 $3</strong> $1</span>')
           
-          // 2. Handle @ingredient{quantity} -> "quantity ingredient"
+          // Handle @ingredient{quantity} -> "quantity ingredient"
           .replace(/@([\w\s]+)\{([^}]*)\}/g, '<span class="ing"><strong>$2</strong> $1</span>')
           
-          // 3. Handle shorthand quantity%unit (e.g., 1%Tbsp) -> "1 Tbsp"
+          // Handle shorthand quantity%unit (e.g., 1%Tbsp) -> "1 Tbsp"
           .replace(/(\d+[\/\d\.]*)%([\w]+)/g, '<strong>$1 $2</strong>')
           
-          // 4. Clean up remaining @ symbols
+          // Clean up remaining @ symbols
           .replace(/@([\w\s]+)/g, '<span class="ing">$1</span>')
           
-          // 5. Handle Cookware #pot{...}
+          // Handle Cookware #pot{...}
           .replace(/#([\w\s]+)\{?([^}]*)\}?/g, '<span class="tool">$1</span>')
           
-          // 6. Metadata and Notes
-          .replace(/>>(.*?)\n/g, '<div class="note"><strong>Note:</strong> $1</div>')
+          // Metadata and Notes (starts with >>)
+          .replace(/>?(.*?)\n/g, (match, note) => {
+            if (match.startsWith('>>')) {
+                return `<div class="note"><strong>Note:</strong> ${note.replace('>>', '').trim()}</div>`;
+            }
+            return match;
+          })
           
-          // 7. Line breaks for instructions
+          // Convert single newlines to <br> for instructions
           .replace(/\n/g, '<br>');
 
+        // Return the full HTML for the recipe page
         return `
           <!DOCTYPE html>
-          <html>
+          <html lang="en">
           <head>
             <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>${data.title}</title>
             <style>
-              body { font-family: 'Georgia', serif; background: #fdfaf7; color: #4e342e; max-width: 700px; margin: 40px auto; padding: 20px; line-height: 1.8; }
-              .recipe-card { background: white; padding: 40px; border-radius: 12px; border: 1px solid #e0d7d5; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-              h1 { color: #5d4037; border-bottom: 2px solid #d7ccc8; margin-top: 0; }
-              strong { color: #5d4037; font-weight: 700; }
-              .ing { display: inline-block; margin-bottom: 2px; }
-              .note { background: #efebe9; padding: 15px; border-radius: 5px; font-style: italic; border-left: 5px solid #8d6e63; margin: 20px 0; }
-              .back { text-decoration: none; color: #8d6e63; font-weight: bold; display: block; margin-bottom: 20px; }
+              body { 
+                font-family: 'Georgia', serif; 
+                background: #fdfaf7; 
+                color: #4e342e; 
+                margin: 0; 
+                padding: 10px; 
+                line-height: 1.6; 
+                display: flex;
+                justify-content: center;
+              }
+              .container { width: 100%; max-width: 800px; }
+              .recipe-card { 
+                background: white; 
+                padding: 25px; 
+                border-radius: 12px; 
+                border: 1px solid #e0d7d5; 
+                box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+                box-sizing: border-box;
+              }
+              h1 { color: #5d4037; border-bottom: 2px solid #d7ccc8; margin-top: 0; font-size: 1.8rem; padding-bottom: 10px; }
+              strong { color: #5d4037; font-weight: bold; }
+              .note { background: #efebe9; padding: 15px; border-radius: 5px; font-style: italic; border-left: 5px solid #8d6e63; margin: 20px 0; font-size: 0.95rem; }
+              .back { text-decoration: none; color: #8d6e63; font-weight: bold; display: inline-block; margin-bottom: 15px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+              .tool { color: #795548; font-style: italic; }
+              
+              /* Desktop Adjustments */
+              @media (min-width: 600px) {
+                body { padding: 40px 20px; }
+                .recipe-card { padding: 40px; }
+                h1 { font-size: 2.5rem; }
+              }
             </style>
           </head>
           <body>
-            <a href="/" class="back">← HOME</a>
-            <div class="recipe-card">
-                <h1>${data.title}</h1>
-                <div class="recipe-body">${formatted}</div>
+            <div class="container">
+                <a href="/" class="back">← Back to Collection</a>
+                <div class="recipe-card">
+                    <h1>${data.title}</h1>
+                    <div class="recipe-body">${formatted}</div>
+                </div>
             </div>
           </body>
           </html>
@@ -74,5 +116,10 @@ module.exports = function(eleventyConfig) {
     }
   });
 
-  return { dir: { input: "recipes", output: "_site" } };
+  return {
+    dir: {
+      input: "recipes",
+      output: "_site"
+    }
+  };
 };

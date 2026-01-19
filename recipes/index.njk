@@ -2,89 +2,227 @@
 permalink: /index.html
 ---
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loving Memories of Mildred</title>
     <style>
-        body { font-family: 'Georgia', serif; background: #fdfaf7; color: #4e342e; max-width: 900px; margin: 40px auto; padding: 20px; }
-        h1 { text-align: center; color: #5d4037; font-size: 2.5em; }
-        
-        .toc { background: #efebe9; padding: 25px; border-radius: 8px; margin-bottom: 40px; border: 1px solid #d7ccc8; }
-        .toc h2 { margin-top: 0; font-size: 1.1em; color: #5d4037; text-transform: uppercase; border-bottom: 1px solid #d7ccc8; padding-bottom: 5px; }
-        .toc-list { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .toc-sec { font-weight: bold; }
-        .toc-sub { list-style: none; padding-left: 15px; font-weight: normal; font-size: 0.9em; }
-        .toc a { color: #8d6e63; text-decoration: none; }
-
-        .major-section { margin-bottom: 50px; }
-        .major-title { font-size: 2em; color: #5d4037; border-bottom: 3px solid #d7ccc8; margin-bottom: 15px; }
-        .sub-section { margin: 25px 0 10px 20px; }
-        .sub-title { color: #8d6e63; font-style: italic; font-size: 1.3em; margin-bottom: 10px; }
-        
-        .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
-        .recipe-link { 
-            background: white; padding: 12px; border: 1px solid #e0d7d5; 
-            border-radius: 4px; text-decoration: none; color: #4e342e; text-align: center; display: block;
+        :root {
+            --primary: #5d4037;
+            --accent: #8d6e63;
+            --bg: #fdfaf7;
+            --card-bg: #ffffff;
+            --border: #e0d7d5;
         }
-        .recipe-link:hover { background: #fffbf0; border-color: #8d6e63; }
+
+        body { 
+            font-family: 'Georgia', serif; 
+            background-color: var(--bg); 
+            color: #4e342e; 
+            margin: 0; 
+            padding: 15px; 
+            line-height: 1.5;
+        }
+
+        .container { 
+            max-width: 1000px; 
+            margin: 0 auto; 
+        }
+
+        header { 
+            text-align: center; 
+            padding: 40px 0; 
+        }
+
+        h1 { 
+            color: var(--primary); 
+            font-size: 2.2rem; 
+            margin: 0; 
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-style: italic;
+            color: var(--accent);
+            margin-top: 10px;
+        }
+
+        /* --- TABLE OF CONTENTS --- */
+        .toc { 
+            background: #efebe9; 
+            padding: 25px; 
+            border-radius: 12px; 
+            margin-bottom: 50px; 
+            border: 1px solid var(--border); 
+        }
+
+        .toc h2 { 
+            margin-top: 0; 
+            font-size: 1rem; 
+            color: var(--primary); 
+            text-transform: uppercase; 
+            border-bottom: 1px solid var(--border); 
+            padding-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .toc-list { 
+            list-style: none; 
+            padding: 0; 
+            display: grid; 
+            grid-template-columns: 1fr; /* Mobile: 1 column */
+            gap: 20px; 
+            margin-top: 20px;
+        }
+
+        .toc-sec { font-weight: bold; }
+        
+        .toc-sub { 
+            list-style: none; 
+            padding-left: 15px; 
+            font-weight: normal; 
+            font-size: 0.9rem; 
+            margin-top: 5px;
+        }
+
+        .toc a { 
+            color: var(--accent); 
+            text-decoration: none; 
+            transition: color 0.2s;
+        }
+
+        .toc a:hover { color: var(--primary); text-decoration: underline; }
+
+        /* --- RECIPE SECTIONS --- */
+        .major-section { margin-bottom: 60px; }
+        
+        .major-title { 
+            font-size: 1.8rem; 
+            color: var(--primary); 
+            border-bottom: 3px solid #d7ccc8; 
+            padding-bottom: 5px;
+            margin-bottom: 30px;
+        }
+
+        .sub-section { 
+            margin-bottom: 40px; 
+        }
+
+        .sub-title { 
+            color: var(--accent); 
+            font-style: italic; 
+            font-size: 1.3rem; 
+            margin-bottom: 15px;
+            padding-left: 10px;
+            border-left: 4px solid var(--border);
+        }
+
+        /* --- RECIPE GRID --- */
+        .recipe-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(100%, 1fr)); 
+            gap: 15px; 
+        }
+
+        .recipe-link { 
+            background: var(--card-bg); 
+            padding: 20px; 
+            border: 1px solid var(--border); 
+            border-radius: 8px; 
+            text-decoration: none; 
+            color: #4e342e; 
+            text-align: center; 
+            display: block;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .recipe-link:hover { 
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: var(--accent);
+        }
+
+        /* --- RESPONSIVE QUERIES --- */
+        @media (min-width: 600px) {
+            body { padding: 40px 20px; }
+            h1 { font-size: 3rem; }
+            .toc-list { grid-template-columns: 1fr 1fr; } /* Tablet: 2 columns */
+            .recipe-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+        }
+
+        @media (min-width: 900px) {
+            .toc-list { grid-template-columns: 1fr 1fr 1fr; } /* Desktop: 3 columns */
+        }
     </style>
 </head>
 <body>
-    <h1>Loving Memories of Mildred</h1>
+    <div class="container">
+        <header>
+            <h1>Loving Memories of Mildred</h1>
+            <p class="subtitle">A digital preservation of her kitchen legacy.</p>
+        </header>
 
-    <nav class="toc">
-        <h2>Table of Contents</h2>
-        <ul class="toc-list">
-        {% set lastSec = "" %}
+        <nav class="toc">
+            <h2>Table of Contents</h2>
+            <ul class="toc-list">
+            {% set lastSec = "" %}
+            {% for recipe in collections.all | sortByFilePath %}
+              {% if recipe.url != '/' %}
+                {% set sec = recipe.filePathStem | getPathPart(0) %}
+                {% set sub = recipe.filePathStem | getPathPart(1) %}
+                
+                {% if sec != lastSec %}
+                    {% if lastSec != "" %}</ul></li>{% endif %}
+                    <li class="toc-sec">
+                        <a href="#{{ sec | slugify }}">{{ sec | titlecase }}</a>
+                        <ul class="toc-sub">
+                    {% set lastSec = sec %}
+                    {% set lastSub = "" %}
+                {% endif %}
+
+                {% if sub != lastSub %}
+                    <li><a href="#{{ sec | slugify }}-{{ sub | slugify }}">{{ sub | titlecase }}</a></li>
+                    {% set lastSub = sub %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            </ul></li></ul>
+        </nav>
+
+        {% set lastMajor = "" %}
+        {% set lastSub = "" %}
+
         {% for recipe in collections.all | sortByFilePath %}
           {% if recipe.url != '/' %}
-            {% set sec = recipe.filePathStem | getPathPart(0) %}
-            {% set sub = recipe.filePathStem | getPathPart(1) %}
-            
-            {% if sec != lastSec %}
-                {% if lastSec != "" %}</ul></li>{% endif %}
-                <li class="toc-sec">
-                    <a href="#{{ sec | slugify }}">{{ sec | titlecase }}</a>
-                    <ul class="toc-sub">
-                {% set lastSec = sec %}
+            {% set currentMajor = recipe.filePathStem | getPathPart(0) %}
+            {% set currentSub = recipe.filePathStem | getPathPart(1) %}
+
+            {% if currentMajor != lastMajor %}
+                {% if lastMajor != "" %}</div></div></div>{% endif %}
+                <div class="major-section" id="{{ currentMajor | slugify }}">
+                    <h2 class="major-title">{{ currentMajor | titlecase }}</h2>
+                    {% set lastMajor = currentMajor %}
+                    {% set lastSub = "" %}
             {% endif %}
 
-            {% if sub != lastSub %}
-                <li><a href="#{{ sec | slugify }}-{{ sub | slugify }}">{{ sub | titlecase }}</a></li>
-                {% set lastSub = sub %}
+            {% if currentSub != lastSub %}
+                {% if lastSub != "" %}</div></div>{% endif %}
+                <div class="sub-section" id="{{ currentMajor | slugify }}-{{ currentSub | slugify }}">
+                    <h3 class="sub-title">{{ currentSub | titlecase }}</h3>
+                    <div class="recipe-grid">
+                    {% set lastSub = currentSub %}
             {% endif %}
+
+            <a href="{{ recipe.url }}" class="recipe-link">
+                {{ recipe.data.title if recipe.data.title else (recipe.fileSlug | replace("-", " ") | titlecase) }}
+            </a>
+
           {% endif %}
         {% endfor %}
-        </ul></li></ul>
-    </nav>
-
-    {% set lastMajor = "" %}
-    {% set lastSub = "" %}
-
-    {% for recipe in collections.all | sortByFilePath %}
-      {% if recipe.url != '/' %}
-        {% set currentMajor = recipe.filePathStem | getPathPart(0) %}
-        {% set currentSub = recipe.filePathStem | getPathPart(1) %}
-
-        {% if currentMajor != lastMajor %}
-            {% if lastMajor != "" %}</div></div></div>{% endif %}
-            <div class="major-section" id="{{ currentMajor | slugify }}">
-                <h2 class="major-title">{{ currentMajor | titlecase }}</h2>
-                {% set lastMajor = currentMajor %}
-                {% set lastSub = "" %}
-        {% endif %}
-
-        {% if currentSub != lastSub %}
-            {% if lastSub != "" %}</div></div>{% endif %}
-            <div class="sub-section" id="{{ currentMajor | slugify }}-{{ currentSub | slugify }}">
-                <h3 class="sub-title">{{ currentSub | titlecase }}</h3>
-                <div class="recipe-grid">
-                {% set lastSub = currentSub %}
-        {% endif %}
-
-        <a href="{{ recipe.url }}" class="recipe-link">{{ recipe.data.title }}</a>
-      {% endif %}
-    {% endfor %}
-    </div></div></div>
+        </div></div></div>
+    </div>
 </body>
 </html>

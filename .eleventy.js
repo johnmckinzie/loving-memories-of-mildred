@@ -28,6 +28,22 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addExtension("cook", {
     compile: async (inputContent) => {
       return async (data) => {
+        // Extract YAML frontmatter
+        const frontmatterMatch = inputContent.match(/^---\n([\s\S]*?)\n---/);
+        let metadata = {};
+        
+        if (frontmatterMatch) {
+          const frontmatterContent = frontmatterMatch[1];
+          // Parse YAML frontmatter (simple key: value parsing)
+          const lines = frontmatterContent.split('\n');
+          lines.forEach(line => {
+            const [key, ...valueParts] = line.split(':');
+            if (key && valueParts.length) {
+              metadata[key.trim()] = valueParts.join(':').trim();
+            }
+          });
+        }
+
         // Remove the YAML frontmatter from the display content
         const recipeBody = inputContent.replace(/^---[\s\S]*?---\n?/, '').trim();
 
@@ -89,6 +105,16 @@ module.exports = function(eleventyConfig) {
               }
               h1 { color: #5d4037; border-bottom: 2px solid #d7ccc8; margin-top: 0; font-size: 1.8rem; padding-bottom: 10px; }
               strong { color: #5d4037; font-weight: bold; }
+              .metadata { 
+                background: #efebe9; 
+                padding: 15px; 
+                border-radius: 5px; 
+                margin-bottom: 25px; 
+                font-size: 0.95rem;
+                border-left: 5px solid #8d6e63;
+              }
+              .metadata p { margin: 8px 0; }
+              .metadata strong { color: #5d4037; }
               .note { background: #efebe9; padding: 15px; border-radius: 5px; font-style: italic; border-left: 5px solid #8d6e63; margin: 20px 0; font-size: 0.95rem; }
               .back { text-decoration: none; color: #8d6e63; font-weight: bold; display: inline-block; margin-bottom: 15px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
               .tool { color: #795548; font-style: italic; }
@@ -106,6 +132,14 @@ module.exports = function(eleventyConfig) {
                 <a href="/" class="back">← Back to Collection</a>
                 <div class="recipe-card">
                     <h1>${data.title}</h1>
+                    ${metadata.author ? `
+                    <div class="metadata">
+                      ${metadata.author ? `<p><strong>Author:</strong> ${metadata.author}</p>` : ''}
+                      ${metadata.category ? `<p><strong>Category:</strong> ${metadata.category}</p>` : ''}
+                      ${metadata['cook time'] ? `<p><strong>Cook Time:</strong> ${metadata['cook time']}</p>` : ''}
+                      ${metadata.source ? `<p><strong>Source:</strong> ${metadata.source}</p>` : ''}
+                    </div>
+                    ` : ''}
                     <div class="recipe-body">${formatted}</div>
                 </div>
             </div>

@@ -59,13 +59,18 @@ module.exports = function(eleventyConfig) {
 
         // Build Metadata Header
         let metadataHtml = '';
-        if (data.author || data.category || data.source || data['cook time']) {
+        // Extract category and subcategory from file path
+        const pathParts = data.filePathStem.split('/').filter(p => p && p !== 'recipes' && p !== 'index');
+        const majorCategory = pathParts[0] ? pathParts[0].replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : '';
+        const subCategory = pathParts[1] ? pathParts[1].replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : '';
+        const categoryDisplay = subCategory ? `${majorCategory} - ${subCategory}` : majorCategory;
+        
+        if (data.author || categoryDisplay || data['cook time']) {
           metadataHtml = `
             <div class="metadata">
               ${data.author ? `<p><strong>Author:</strong> ${data.author}</p>` : ''}
-              ${data.category ? `<p><strong>Category:</strong> ${data.category}</p>` : ''}
+              ${categoryDisplay ? `<p><strong>Category:</strong> ${categoryDisplay}</p>` : ''}
               ${data['cook time'] ? `<p><strong>Cook Time:</strong> ${data['cook time']}</p>` : ''}
-              ${data.source ? `<p><strong>Source:</strong> ${data.source}</p>` : ''}
             </div>
           `;
         }

@@ -60,7 +60,7 @@ module.exports = function(eleventyConfig) {
         // Build Metadata Header
         let metadataHtml = '';
         // Extract category and subcategory from file path
-        const pathParts = data.filePathStem.split('/').filter(p => p && p !== 'recipes' && p !== 'index');
+        const pathParts = data.filePathStem ? data.filePathStem.split('/').filter(p => p && p !== 'recipes' && p !== 'index') : [];
         const majorCategory = pathParts[0] ? pathParts[0].replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : '';
         const subCategory = pathParts[1] ? pathParts[1].replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : '';
         const categoryDisplay = subCategory ? `${majorCategory} - ${subCategory}` : majorCategory;

@@ -90,54 +90,59 @@ module.exports = function(eleventyConfig) {
               body { 
                 font-family: 'Georgia', serif; 
                 background: #fdfaf7; 
-                color: #4e342e; 
+                color: #2c1810; 
                 margin: 0; 
                 padding: 10px; 
-                line-height: 1.6; 
+                line-height: 1.7; 
                 display: flex;
                 justify-content: center;
+                font-size: 18px;
               }
               .container { width: 100%; max-width: 800px; }
               .recipe-card { 
                 background: white; 
                 padding: 25px; 
                 border-radius: 12px; 
-                border: 1px solid #e0d7d5; 
+                border: 2px solid #d7ccc8; 
                 box-shadow: 0 4px 15px rgba(0,0,0,0.05);
                 box-sizing: border-box;
               }
-              h1 { color: #5d4037; border-bottom: 2px solid #d7ccc8; margin-top: 0; font-size: 1.8rem; padding-bottom: 10px; }
+              h1 { color: #3c1810; border-bottom: 3px solid #d7ccc8; margin-top: 0; font-size: 2.2rem; padding-bottom: 15px; font-weight: bold; }
               
               /* Section Styles */
               .recipe-section {
-                color: #8d6e63;
-                font-size: 1.3rem;
+                color: #3c1810;
+                font-size: 1.5rem;
                 margin-top: 30px;
-                margin-bottom: 10px;
-                border-bottom: 1px solid #efebe9;
+                margin-bottom: 15px;
+                border-bottom: 2px solid #d7ccc8;
                 text-transform: uppercase;
                 letter-spacing: 1px;
                 display: block;
+                font-weight: 600;
               }
 
               .metadata { 
-                background: #efebe9; 
+                background: #f5f0ed; 
                 padding: 15px; 
                 border-radius: 5px; 
                 margin-bottom: 25px; 
-                font-size: 0.95rem;
-                border-left: 5px solid #8d6e63;
+                font-size: 1rem;
+                border-left: 5px solid #5d4037;
               }
-              .metadata p { margin: 5px 0; }
+              .metadata p { margin: 8px 0; }
               
-              strong { color: #5d4037; }
-              .note { background: #efebe9; padding: 15px; border-radius: 5px; font-style: italic; border-left: 5px solid #8d6e63; margin: 20px 0; font-size: 0.95rem; }
-              .back { text-decoration: none; color: #8d6e63; font-weight: bold; display: inline-block; margin-bottom: 15px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+              strong { color: #3c1810; font-weight: 600; }
+              .ing { font-size: 1.05rem; }
+              .note { background: #f5f0ed; padding: 15px; border-radius: 5px; font-style: italic; border-left: 5px solid #5d4037; margin: 20px 0; font-size: 1rem; color: #2c1810; }
+              .back { text-decoration: none; color: #3c1810; font-weight: bold; display: inline-block; margin-bottom: 15px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; }
+              .back:hover { background-color: #f5f0ed; padding: 8px 4px; }
+              .back:focus { outline: 3px solid #3c1810; outline-offset: 2px; }
               
               @media (min-width: 600px) {
-                body { padding: 40px 20px; }
+                body { padding: 40px 20px; font-size: 18px; }
                 .recipe-card { padding: 40px; }
-                h1 { font-size: 2.5rem; }
+                h1 { font-size: 2.8rem; }
               }
             </style>
           </head>

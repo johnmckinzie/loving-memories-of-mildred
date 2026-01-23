@@ -9,20 +9,21 @@ permalink: /index.html
     <title>Loving Memories of Mildred</title>
     <style>
         :root {
-            --primary: #5d4037;
-            --accent: #8d6e63;
+            --primary: #3c1810;
+            --accent: #5d4037;
             --bg: #fdfaf7;
             --card-bg: #ffffff;
-            --border: #e0d7d5;
+            --border: #d7ccc8;
         }
 
         body { 
             font-family: 'Georgia', serif; 
             background-color: var(--bg); 
-            color: #4e342e; 
+            color: #2c1810; 
             margin: 0; 
             padding: 15px; 
-            line-height: 1.5;
+            line-height: 1.7;
+            font-size: 18px;
         }
 
         .container { 
@@ -37,7 +38,7 @@ permalink: /index.html
 
         h1 { 
             color: var(--primary); 
-            font-size: 2.2rem; 
+            font-size: 2.8rem; 
             margin: 0; 
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -45,8 +46,9 @@ permalink: /index.html
 
         .subtitle {
             font-style: italic;
-            color: var(--accent);
+            color: #3c1810;
             margin-top: 10px;
+            font-size: 1.1rem;
         }
 
         /* --- TABLE OF CONTENTS --- */
@@ -60,12 +62,13 @@ permalink: /index.html
 
         .toc h2 { 
             margin-top: 0; 
-            font-size: 1rem; 
+            font-size: 1.2rem; 
             color: var(--primary); 
             text-transform: uppercase; 
-            border-bottom: 1px solid var(--border); 
+            border-bottom: 2px solid var(--border); 
             padding-bottom: 10px;
             letter-spacing: 1px;
+            font-weight: bold;
         }
 
         .toc-list { 
@@ -77,33 +80,37 @@ permalink: /index.html
             margin-top: 20px;
         }
 
-        .toc-sec { font-weight: bold; }
+        .toc-sec { font-weight: bold; font-size: 1.05rem; }
         
         .toc-sub { 
             list-style: none; 
             padding-left: 15px; 
             font-weight: normal; 
-            font-size: 0.9rem; 
+            font-size: 1rem; 
             margin-top: 5px;
         }
 
         .toc a { 
-            color: var(--accent); 
-            text-decoration: none; 
+            color: #3c1810; 
+            text-decoration: underline;
             transition: color 0.2s;
+            font-weight: 500;
         }
 
-        .toc a:hover { color: var(--primary); text-decoration: underline; }
+        .toc a:hover { color: var(--primary); text-decoration: underline; background-color: #f5f0ed; padding: 2px 4px; }
+        
+        .toc a:focus { outline: 3px solid #3c1810; outline-offset: 2px; border-radius: 2px; }
 
         /* --- RECIPE SECTIONS --- */
         .major-section { margin-bottom: 60px; }
         
         .major-title { 
-            font-size: 1.8rem; 
+            font-size: 2.2rem; 
             color: var(--primary); 
-            border-bottom: 3px solid #d7ccc8; 
-            padding-bottom: 5px;
+            border-bottom: 3px solid var(--border); 
+            padding-bottom: 10px;
             margin-bottom: 30px;
+            font-weight: bold;
         }
 
         .sub-section { 
@@ -111,12 +118,13 @@ permalink: /index.html
         }
 
         .sub-title { 
-            color: var(--accent); 
+            color: #3c1810; 
             font-style: italic; 
-            font-size: 1.3rem; 
+            font-size: 1.6rem; 
             margin-bottom: 15px;
-            padding-left: 10px;
-            border-left: 4px solid var(--border);
+            padding-left: 15px;
+            border-left: 5px solid var(--accent);
+            font-weight: 600;
         }
 
         /* --- RECIPE GRID --- */
@@ -129,28 +137,36 @@ permalink: /index.html
         .recipe-link { 
             background: var(--card-bg); 
             padding: 20px; 
-            border: 1px solid var(--border); 
+            border: 2px solid var(--border); 
             border-radius: 8px; 
             text-decoration: none; 
-            color: #4e342e; 
+            color: #2c1810; 
             text-align: center; 
             display: block;
             box-shadow: 0 2px 5px rgba(0,0,0,0.04);
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+            font-weight: 500;
+            font-size: 1.05rem;
         }
 
         .recipe-link:hover { 
             transform: translateY(-3px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             border-color: var(--accent);
+            background-color: #faf7f4;
+        }
+        
+        .recipe-link:focus { 
+            outline: 3px solid var(--primary);
+            outline-offset: 2px;
         }
 
         /* --- RESPONSIVE QUERIES --- */
         @media (min-width: 600px) {
-            body { padding: 40px 20px; }
-            h1 { font-size: 3rem; }
+            body { padding: 40px 20px; font-size: 18px; }
+            h1 { font-size: 3.2rem; }
             .toc-list { grid-template-columns: 1fr 1fr; } /* Tablet: 2 columns */
-            .recipe-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+            .recipe-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
         }
 
         @media (min-width: 900px) {

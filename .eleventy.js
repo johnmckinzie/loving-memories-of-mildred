@@ -31,25 +31,27 @@ module.exports = function(eleventyConfig) {
         // Remove the YAML frontmatter block for processing the body
         const recipeBody = inputContent.replace(/^---[\s\S]*?---\n?/, '').trim();
 
+        const ingredientNamePattern = "[^@#\\{\\}\\n]+";
+
         // Transform Cooklang symbols into clean HTML
         let formatted = recipeBody
           // A. Sections: == Section Name == (Multiline flag 'm' is key here)
           .replace(/^==+\s*(.*?)\s*==+/gm, '<h3 class="recipe-section">$1</h3>')
 
           // B. Ingredients with units: @ingredient{quantity%unit}
-          .replace(/@([\w\s]+)\{([^%}]*)%([^}]*)\}/g, '<span class="ing"><strong>$2 $3</strong> $1</span>')
+          .replace(new RegExp(`@(${ingredientNamePattern})\\{([^%}]*)%([^}]*)\\}`, 'g'), (_, name, qty, unit) => `<span class="ing"><strong>${qty.trim()} ${unit.trim()}</strong> ${name.trim()}</span>`)
           
           // C. Ingredients without units: @ingredient{quantity}
-          .replace(/@([\w\s]+)\{([^}]*)\}/g, '<span class="ing"><strong>$2</strong> $1</span>')
+          .replace(new RegExp(`@(${ingredientNamePattern})\\{([^}]*)\\}`, 'g'), (_, name, qty) => `<span class="ing"><strong>${qty.trim()}</strong> ${name.trim()}</span>`)
           
           // D. Shorthand quantities: 1%Tbsp
           .replace(/(\d+[\/\d\.]*)%([\w]+)/g, '<strong>$1 $2</strong>')
           
           // E. Plain ingredients: @Salt
-          .replace(/@([\w\s]+)/g, '<span class="ing">$1</span>')
+          .replace(new RegExp(`@(${ingredientNamePattern})`, 'g'), (_, name) => `<span class="ing">${name.trim()}</span>`)
           
           // F. Cookware: #pot{...}
-          .replace(/#([\w\s]+)\{?([^}]*)\}?/g, '<span class="tool">$1</span>')
+          .replace(/#([a-z][\w\s]*?)(?:\{([^}]*)\})?/gi, '<span class="tool">$1</span>')
           
           // G. Notes and Metadata lines: >> This is a note
           .replace(/^>>\s*(.*?)$/gm, '<div class="note"><strong>Note:</strong> $1</div>')
